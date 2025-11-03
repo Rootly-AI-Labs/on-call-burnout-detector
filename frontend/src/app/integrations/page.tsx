@@ -1061,6 +1061,9 @@ export default function IntegrationsPage() {
 
       const rootlyData = (rootlyResponse as any).ok && (rootlyResponse as Response).json ? await (rootlyResponse as Response).json() : { integrations: [] }
       const pagerdutyData = (pagerdutyResponse as any).ok && (pagerdutyResponse as Response).json ? await (pagerdutyResponse as Response).json() : { integrations: [] }
+
+      console.log('Rootly integrations loaded:', rootlyData.integrations)
+      console.log('PagerDuty integrations loaded:', pagerdutyData.integrations)
       const githubData = (githubResponse as any).ok && (githubResponse as Response).json ? await (githubResponse as Response).json() : { connected: false, integration: null }
       const slackData = (slackResponse as any).ok && (slackResponse as Response).json ? await (slackResponse as Response).json() : { integration: null }
 
