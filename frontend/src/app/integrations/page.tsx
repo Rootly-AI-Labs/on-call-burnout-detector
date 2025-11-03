@@ -1033,7 +1033,8 @@ export default function IntegrationsPage() {
       }
 
       const [rootlyResponse, pagerdutyResponse, githubResponse, slackResponse] = await Promise.all([
-        fetchWithTimeout(`${API_BASE}/rootly/integrations`, {
+        // Use skip_permissions=true for instant loading (100ms vs 10s)
+        fetchWithTimeout(`${API_BASE}/rootly/integrations?skip_permissions=true`, {
           headers: { 'Authorization': `Bearer ${authToken}` }
         }).catch((error) => {
           console.error('Rootly API request failed:', error.message)
