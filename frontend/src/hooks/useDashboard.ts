@@ -474,7 +474,8 @@ export default function useDashboard() {
         const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
         try {
-          response = await fetch(`${API_BASE}/analyses?limit=${limit}&offset=${offset}`, {
+          // Use ?summary=true for faster initial load (excludes raw_incident_data, individual_daily_data)
+          response = await fetch(`${API_BASE}/analyses?limit=${limit}&offset=${offset}&summary=true`, {
             headers: {
               'Authorization': `Bearer ${authToken}`
             },
@@ -592,8 +593,9 @@ export default function useDashboard() {
       const isUuid = analysisId.includes('-')
 
       // Use the unified endpoint that handles both UUIDs and integer IDs
-      const endpoint = `${API_BASE}/analyses/by-id/${analysisId}`
-      
+      // Use ?summary=true for faster initial load (excludes raw_incident_data, individual_daily_data)
+      const endpoint = `${API_BASE}/analyses/by-id/${analysisId}?summary=true`
+
       const response = await fetch(endpoint, {
         headers: {
           'Authorization': `Bearer ${authToken}`
