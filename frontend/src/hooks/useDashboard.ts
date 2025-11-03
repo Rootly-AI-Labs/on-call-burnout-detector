@@ -471,7 +471,7 @@ export default function useDashboard() {
 
         // Add timeout to prevent indefinite waiting
         const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
 
         try {
           // Use ?summary=true for faster initial load (excludes raw_incident_data, individual_daily_data)
