@@ -980,13 +980,9 @@ export default function IntegrationsPage() {
         setLoadingGitHub(false)
         setLoadingSlack(false)
         
-        // Step 3: Check if cache is stale and refresh in background if needed
-        const cacheIsStale = isCacheStale()
-        if (cacheIsStale) {
-          // Non-blocking background refresh
-          setTimeout(() => refreshInBackground(), 100)
-        } else {
-        }
+        // Step 3: Always load permissions in background for fresh data
+        // This also adds beta integration if it exists
+        setTimeout(() => loadPermissionsInBackground(), 100)
         return
       }
       
