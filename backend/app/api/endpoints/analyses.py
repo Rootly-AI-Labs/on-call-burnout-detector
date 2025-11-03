@@ -73,7 +73,7 @@ class AnalysisSummaryResponse(BaseModel):
 
 
 class AnalysisListResponse(BaseModel):
-    analyses: List[AnalysisResponse]
+    analyses: List[Union[AnalysisResponse, AnalysisSummaryResponse]]
     total: int
 
 
