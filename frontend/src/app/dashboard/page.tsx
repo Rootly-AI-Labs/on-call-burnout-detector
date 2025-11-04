@@ -168,6 +168,7 @@ export default function Dashboard() {
   exportAsJSON,
   shouldShowInsufficientDataCard,
   updateURLWithAnalysis,
+  normalizeAnalysisFormat,
 
   // start-analysis modal
   showTimeRangeDialog,
@@ -326,7 +327,7 @@ export default function Dashboard() {
                         if (cachedAnalysis) {
                           console.log('Using cached analysis!')
                           // Use cached analysis data (includes both sufficient and insufficient data cases)
-                          setCurrentAnalysis(cachedAnalysis)
+                          setCurrentAnalysis(normalizeAnalysisFormat(cachedAnalysis))
                           setRedirectingToSuggested(false) // Turn off redirect loader
                           updateURLWithAnalysis(cachedAnalysis.uuid || cachedAnalysis.id)
                           return
@@ -359,27 +360,29 @@ export default function Dashboard() {
                             if (response.ok) {
                               const fullAnalysis = await response.json()
                               console.log('Successfully loaded full analysis:', fullAnalysis)
-                              // Cache the full analysis data (whether sufficient or insufficient)
-                              setAnalysisCache(prev => new Map(prev.set(analysisKey, fullAnalysis)))
-                              setCurrentAnalysis(fullAnalysis)
+                              // Normalize and cache the full analysis data
+                              const normalized = normalizeAnalysisFormat(fullAnalysis)
+                              setAnalysisCache(prev => new Map(prev.set(analysisKey, normalized)))
+                              setCurrentAnalysis(normalized)
                               setRedirectingToSuggested(false) // Turn off redirect loader
                               updateURLWithAnalysis(fullAnalysis.uuid || fullAnalysis.id)
                             } else {
                               console.error(`Failed to fetch analysis: ${response.status} ${response.statusText}`)
-                              setCurrentAnalysis(analysis)
+                              setCurrentAnalysis(normalizeAnalysisFormat(analysis))
                               setRedirectingToSuggested(false) // Turn off redirect loader
                               updateURLWithAnalysis(analysis.uuid || analysis.id)
                             }
                           } catch (error) {
                             console.error('Error fetching analysis:', error)
-                            setCurrentAnalysis(analysis)
+                            setCurrentAnalysis(normalizeAnalysisFormat(analysis))
                             setRedirectingToSuggested(false) // Turn off redirect loader
                             updateURLWithAnalysis(analysis.uuid || analysis.id)
                           }
                         } else {
-                          // Analysis already has full data, cache it and use it
-                          setAnalysisCache(prev => new Map(prev.set(analysisKey, analysis)))
-                          setCurrentAnalysis(analysis)
+                          // Analysis already has full data, normalize, cache it and use it
+                          const normalized = normalizeAnalysisFormat(analysis)
+                          setAnalysisCache(prev => new Map(prev.set(analysisKey, normalized)))
+                          setCurrentAnalysis(normalized)
                           setRedirectingToSuggested(false) // Turn off redirect loader
                           updateURLWithAnalysis(analysis.uuid || analysis.id)
                         }
@@ -1761,7 +1764,7 @@ export default function Dashboard() {
                     onClick={() => {
                       updateURLWithAnalysis(null)
                       if (previousAnalyses.length > 0) {
-                        setCurrentAnalysis(previousAnalyses[0])
+                        setCurrentAnalysis(normalizeAnalysisFormat(previousAnalyses[0]))
                         updateURLWithAnalysis(previousAnalyses[0].uuid || previousAnalyses[0].id)
                       }
                     }}

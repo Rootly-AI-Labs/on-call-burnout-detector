@@ -2095,6 +2095,7 @@ return {
   exportAsJSON,
   shouldShowInsufficientDataCard,
   updateURLWithAnalysis,
+  normalizeAnalysisFormat,
 
   // start-analysis modal
   showTimeRangeDialog,
