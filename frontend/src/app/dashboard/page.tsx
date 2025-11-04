@@ -332,10 +332,16 @@ export default function Dashboard() {
                           return
                         }
 
-                        console.log('Cache miss, will fetch...')
+                        console.log('Cache miss, checking if data exists...')
 
-                        // If analysis doesn't have full data and not in cache, fetch it
-                        if (!analysis.analysis_data || !analysis.analysis_data.team_analysis) {
+                        // Check if analysis has summary data (new format with team_analysis at root)
+                        // or full data (old format with analysis_data.team_analysis)
+                        const hasSummaryData = (analysis as any).team_analysis || (analysis.analysis_data?.team_analysis)
+
+                        console.log('Has summary data?', !!hasSummaryData)
+
+                        // If analysis doesn't have any team_analysis data, fetch it
+                        if (!hasSummaryData) {
                           try {
                             const authToken = localStorage.getItem('auth_token')
                             if (!authToken) {
