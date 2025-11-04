@@ -120,7 +120,11 @@ def extract_summary_from_analysis(analysis: Analysis) -> AnalysisSummaryResponse
     Returns what's needed for dashboard initial load.
     """
     results = analysis.results or {}
-    logger.info(f"extract_summary_from_analysis for analysis {analysis.id}: results keys = {list(results.keys())}")
+    logger.info(f"extract_summary_from_analysis for analysis {analysis.id}:")
+    logger.info(f"  - results type: {type(results)}")
+    logger.info(f"  - results keys: {list(results.keys()) if isinstance(results, dict) else 'NOT A DICT'}")
+    logger.info(f"  - results is None: {results is None}")
+    logger.info(f"  - results == {{}}: {results == {}}")
 
     # Extract team_health (overall score only)
     team_health = results.get('team_health')
@@ -134,7 +138,12 @@ def extract_summary_from_analysis(analysis: Analysis) -> AnalysisSummaryResponse
 
     # Extract team_analysis (keep members - needed for dashboard display)
     team_analysis = results.get('team_analysis')
-    logger.info(f"extract_summary: team_analysis type = {type(team_analysis)}, has data = {bool(team_analysis)}")
+    logger.info(f"  - team_analysis type: {type(team_analysis)}")
+    logger.info(f"  - team_analysis is None: {team_analysis is None}")
+    logger.info(f"  - team_analysis bool: {bool(team_analysis)}")
+    if team_analysis and isinstance(team_analysis, dict):
+        logger.info(f"  - team_analysis keys: {list(team_analysis.keys())}")
+        logger.info(f"  - team_analysis.members length: {len(team_analysis.get('members', []))}")
 
     # Extract team_summary (counts only)
     team_summary = None
