@@ -120,6 +120,7 @@ def extract_summary_from_analysis(analysis: Analysis) -> AnalysisSummaryResponse
     Returns what's needed for dashboard initial load.
     """
     results = analysis.results or {}
+    logger.info(f"extract_summary_from_analysis for analysis {analysis.id}: results keys = {list(results.keys())}")
 
     # Extract team_health (overall score only)
     team_health = results.get('team_health')
@@ -133,6 +134,7 @@ def extract_summary_from_analysis(analysis: Analysis) -> AnalysisSummaryResponse
 
     # Extract team_analysis (keep members - needed for dashboard display)
     team_analysis = results.get('team_analysis')
+    logger.info(f"extract_summary: team_analysis type = {type(team_analysis)}, has data = {bool(team_analysis)}")
 
     # Extract team_summary (counts only)
     team_summary = None
@@ -168,7 +170,7 @@ def extract_summary_from_analysis(analysis: Analysis) -> AnalysisSummaryResponse
     if 'config' not in metadata:
         metadata['config'] = analysis.config
 
-    return AnalysisSummaryResponse(
+    response = AnalysisSummaryResponse(
         id=analysis.id,
         uuid=getattr(analysis, 'uuid', None),
         integration_id=analysis.rootly_integration_id,
@@ -189,6 +191,8 @@ def extract_summary_from_analysis(analysis: Analysis) -> AnalysisSummaryResponse
         github_insights=results.get('github_insights'),
         slack_insights=results.get('slack_insights')
     )
+    logger.info(f"extract_summary: returning response with team_analysis = {bool(response.team_analysis)}")
+    return response
 
 
 @router.post("/run", response_model=AnalysisResponse)
