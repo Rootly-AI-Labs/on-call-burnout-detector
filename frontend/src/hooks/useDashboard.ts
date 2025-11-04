@@ -873,7 +873,18 @@ export default function useDashboard() {
         if (cacheAge < fiveMinutes) {
           try {
             const cached = JSON.parse(cachedIntegrations)
-            setIntegrations(cached)
+
+            // Check if cached integrations have permissions data
+            // If they don't, we should fetch fresh data with permissions for dashboard
+            const hasSomePermissions = cached.some((i: any) => i.permissions)
+
+            if (!hasSomePermissions) {
+              // Cache is missing permissions, fetch fresh data
+              // This happens when cache comes from integrations page with skip_permissions=true
+              console.log('Dashboard: cached integrations missing permissions, fetching fresh data')
+              // Fall through to fetch fresh data below
+            } else {
+              setIntegrations(cached)
             
             // Also load GitHub and Slack from cache if available
             const cachedGithub = localStorage.getItem('github_integration')
@@ -906,16 +917,17 @@ export default function useDashboard() {
               localStorage.setItem('selected_organization', cached[0].id.toString())
             }
             
-            // Set loading to false when using cache
-            setLoadingIntegrations(false)
-            setHasDataFromCache(true)
-            
-            // Still need to load previous analyses when using integration cache
-            loadPreviousAnalyses()
+              // Set loading to false when using cache
+              setLoadingIntegrations(false)
+              setHasDataFromCache(true)
 
-            return
+              // Still need to load previous analyses when using integration cache
+              loadPreviousAnalyses()
+
+              return
+            }
           } catch (error) {
-              // Continue to fetch fresh data
+            // Continue to fetch fresh data
           }
         }
       }
