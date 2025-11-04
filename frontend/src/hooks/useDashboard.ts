@@ -1268,6 +1268,9 @@ export default function useDashboard() {
       currentIntegrations = rootlyIntegrations.concat(pagerdutyIntegrations)
       // Update state with fresh data including permissions
       setIntegrations(currentIntegrations)
+
+      // Give React a moment to update state before opening dialog
+      await new Promise(resolve => setTimeout(resolve, 50))
     }
 
     // Only show error if we still don't have any integrations after loading
