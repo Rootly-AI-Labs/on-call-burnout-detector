@@ -360,8 +360,12 @@ export default function Dashboard() {
                             if (response.ok) {
                               const fullAnalysis = await response.json()
                               console.log('Successfully loaded full analysis:', fullAnalysis)
+                              console.log('Has team_analysis at root?', !!fullAnalysis.team_analysis)
+                              console.log('Has analysis_data?', !!fullAnalysis.analysis_data)
                               // Normalize and cache the full analysis data
                               const normalized = normalizeAnalysisFormat(fullAnalysis)
+                              console.log('After normalization - has analysis_data?', !!normalized.analysis_data)
+                              console.log('After normalization - team_analysis:', normalized.analysis_data?.team_analysis ? 'EXISTS' : 'MISSING')
                               setAnalysisCache(prev => new Map(prev.set(analysisKey, normalized)))
                               setCurrentAnalysis(normalized)
                               setRedirectingToSuggested(false) // Turn off redirect loader
