@@ -1246,8 +1246,11 @@ export default function useDashboard() {
   }
 
   const startAnalysis = async () => {
+    // Ensure integrations with permissions are loaded
+    await ensureIntegrationsLoaded()
+
     let currentIntegrations = integrations
-    
+
     // Check if we have basic integrations cached
     if (currentIntegrations.length === 0) {
       // Check if we have cached data in localStorage first
@@ -1742,7 +1745,11 @@ export default function useDashboard() {
   }
 
   const ensureIntegrationsLoaded = async () => {
-    if (integrations.length === 0 && !dropdownLoading) {
+    // Check if integrations are missing OR if permissions haven't been loaded
+    const needsLoad = integrations.length === 0
+    const needsPermissions = integrations.length > 0 && integrations.some(i => i.permissions === undefined)
+
+    if ((needsLoad || needsPermissions) && !dropdownLoading) {
       setDropdownLoading(true)
       try {
         await loadIntegrations(true, false) // Force refresh, no global loading
