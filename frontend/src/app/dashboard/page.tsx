@@ -350,7 +350,7 @@ export default function Dashboard() {
                             }
 
                             console.log(`Fetching full analysis data for analysis ${analysis.id}...`)
-                            const response = await fetch(`${API_BASE}/analyses/${analysis.id}`, {
+                            const response = await fetch(`${API_BASE}/analyses/by-id/${analysisKey}?summary=true`, {
                               headers: {
                                 'Authorization': `Bearer ${authToken}`
                               }
