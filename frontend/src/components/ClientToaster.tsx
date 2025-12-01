@@ -1,12 +1,21 @@
 "use client"
 
-import { Toaster as Sonner } from "sonner"
+import { useEffect, useState, type ComponentType } from 'react'
 
-type ToasterProps = React.ComponentProps<typeof Sonner>
+export default function ClientToaster() {
+  const [ToasterComponent, setToasterComponent] = useState<ComponentType<any> | null>(null)
 
-const Toaster = ({ ...props }: ToasterProps) => {
+  useEffect(() => {
+    // Dynamically import sonner only on client side
+    import('sonner').then((mod) => {
+      setToasterComponent(() => mod.Toaster)
+    })
+  }, [])
+
+  if (!ToasterComponent) return null
+
   return (
-    <Sonner
+    <ToasterComponent
       theme="light"
       className="toaster group"
       toastOptions={{
@@ -20,9 +29,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
             "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
         },
       }}
-      {...props}
     />
   )
 }
-
-export { Toaster }
